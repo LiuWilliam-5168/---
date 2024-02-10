@@ -40,7 +40,7 @@ int q;  cin >> q;
 while (q--) {
     int n;  cin >> n;
 
-    int an = 1;
+    long long an = 1;
     for (int i = 1; i <= n; i++) {
         an *= i;
         an %= MOD;
@@ -184,6 +184,11 @@ void solve() {
     }
 }
 ```
+
+----
+
+## 題目：
+* [薇閣資研社進階測試題 ─ pC. 走階梯](https://codeforces.com/group/m1FMwlvtGj/contest/466863/problem/C)
 
 ---
 
