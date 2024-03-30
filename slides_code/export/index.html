@@ -1,0 +1,1350 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Reveal JS presentation</title>
+
+  <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+  <meta name="author" content="Hakim El Hattab">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/reset.css">
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/reveal.css">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- highlight Theme -->
+  
+  <link rel="stylesheet" href="libs/highlight.js/11.3.1/styles/monokai.min.css">
+  
+	
+		
+	<link rel="stylesheet" href="libs/reveal.js/4.3.1/plugin/chalkboard/style.css">
+	
+	
+	
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/plugin/customcontrols/style.css">
+  
+	
+
+
+
+  <!-- Revealjs Theme -->
+  
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/theme/black.css" id="theme">
+  
+  
+
+  <link rel="stylesheet" href="libs/styles/tasklist.css">
+	<link rel="stylesheet" href="libs/styles/iota.css">
+	<link rel="stylesheet" href="libs/styles/layout.css">
+
+
+  <!-- Revealjs Theme -->
+  
+
+   <!-- css list -->
+	
+
+   
+
+</head>
+
+<body>
+
+   
+
+  <div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+      
+
+
+    
+        <section >
+            
+            <h1>薇閣資研社上課簡報</h1>
+<h2>動態規劃 Dynamic Programming</h2>
+<h3>講師：副社長 劉威廉</h3>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>簡介</h1>
+<p>動態規劃 (Dynamic Programming) 是分治法的延伸。當分治法分割出來的問題，一而再、再而三出現，就運用記憶法儲存這些問題的答案，避免重複求解，以空間換取時間。
+動態規劃的過程，就是反覆地讀取數據、計算數據、儲存數據。</p>
+
+            </section>
+    
+
+
+
+    
+    <section>
+        <section >
+            <h1>基礎 DP</h1>
+
+            </section>
+        
+            <section >
+                <h2>階乘問題</h2>
+<blockquote>
+<p>有 $Q$ 次詢問，每次問你 $N!$ 取除以 $10^9 + 7$ 的餘數是多少？
+$(1 \leq N \leq 10^5, 1 \leq Q \leq 10^5)$</p>
+</blockquote>
+
+            </section>
+        
+
+    </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>方法一：一個一個算</h3>
+<p>每次詢問一個 $N$ 後算出 $N!$ 的大小</p>
+<pre><code class="language-cpp">const int MOD = 1e9 + 7;
+
+int q;  cin &gt;&gt; q;
+
+while (q---) {
+    int n;  cin &gt;&gt; n;
+
+    long long an = 1;
+    for (int i = 1; i &lt;= n; i++) {
+        an *= i;
+        an %= MOD;
+    }
+
+    cout &lt;&lt; an &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(QN) \Rightarrow \text{TLE}$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>方法二：使用 DP</h3>
+<p>因為上一個方法你會發現到同樣的一種階層會算到好幾次，那我們就把他們存起來，下次要用的時候直接拿出來就好</p>
+<p>e.g. 算 $10!$ 和 $12!$ 都會用到 $8!$，如果我們有把 $8!$ 的答案存下來就可以必面重複算的時間</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>【DP 三步驟】</h3>
+<ol>
+<li>定義：$dp(x)$ 為 $x!$ 的答案</li>
+<li>初始值：$dp(1) = 1$</li>
+<li>轉移式：$dp(x) = dp(x-1) \times x$</li>
+</ol>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int MOD = 1e9 + 7;
+const int maxn = (int)2e5 + 5;
+
+int dp[maxn];
+
+dp[1] = 1;
+for (int i = 2; i &lt;= 10000; i++) {
+    dp[i] = dp[i - 1] * i;
+    dp[i] %= MOD;
+}
+
+int q;  cin &gt;&gt; q;
+
+while (q---) {
+    int n;  cin &gt;&gt; n;
+
+    cout &lt;&lt; dp[n] &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(N + Q)$</p>
+<p>💡 利用了 DP 的轉移來成功用空間換取時間</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>走樓梯問題</h2>
+<blockquote>
+<p>有一個人要走樓梯，總共有 $N$ 層階梯，每走一步可以往上走 1 或 2 格階梯，請問走上樓梯有幾種方法？請輸出答案除以 $10^9 + 7$ 的餘數。
+$(1 \leq N \leq 10^5)$</p>
+</blockquote>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>我們一樣用 DP 三步驟來解決這一題：</p>
+<ol>
+<li>定義：$dp(x)$ 為走上 $x$ 個階梯的方法數</li>
+<li>初始值：$dp(0) = 1$</li>
+<li>轉移式：$dp(x) = dp(x-1) + dp(x-2)$</li>
+</ol>
+<p>而計算 DP 值又有分為兩種方法：Top-down &amp; Bottom-up</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>Top-down</h3>
+<p>顧名思義就是從上往下的順序來求 DP 值</p>
+<ul>
+<li>好處
+<ul>
+<li>不必斤斤計較計算順序</li>
+<li>只計算必要的問題，而不必計算所有可能的問題</li>
+</ul>
+</li>
+<li>壞處
+<ul>
+<li>程式碼採用遞迴結構，不斷呼叫函式，執行效率較差</li>
+<li>無法自由地控制計算順序，因而無法妥善運用記憶體，浪費了可回收再利用的記憶體</li>
+</ul>
+</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)2e5 + 5;
+const int MOD = 1e9 + 7;
+
+int dp[maxn];
+
+int f(int x) {
+    if (dp[x]) return dp[x];
+    if (x == 0 or x == 1) return dp[x] = 1;
+
+    return dp[x] = (f(x - 1) + f(x - 2)) % MOD;
+}
+
+void solve() {
+    int q;  cin &gt;&gt; q;
+
+    while (q---) {
+        int n;  cin &gt;&gt; n;
+
+        cout &lt;&lt; f(n) &lt;&lt; '\n';
+    }
+}
+</code></pre>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>Bottom-up</h3>
+<p>訂定一個計算順序，然後由最小的問題開始計算，通常只有幾個迴圈</p>
+<ul>
+<li>好處：與 Top-down 相反</li>
+<li>壞處：與 Top-down 相反</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)2e5 + 5;
+const int MOD = 1e9 + 7;
+
+int dp[maxn];
+
+void solve() {
+    dp[0] = dp[1] = 1;
+    for (int i = 2; i &lt; maxn; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+        if (dp[i] &gt;= MOD) dp[i] -= MOD;
+    }
+
+    int q;  cin &gt;&gt; q;
+
+    while (q---) {
+        int n;  cin &gt;&gt; n;
+
+        cout &lt;&lt; dp[n] &lt;&lt; '\n';
+    }
+}
+</code></pre>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>題目：</h2>
+<ul>
+<li><a href="https://codeforces.com/group/m1FMwlvtGj/contest/466863/problem/C">薇閣資研社進階測試題 ─ pC. 走階梯</a></li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>背包問題</h1>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>0/1 背包問題</h2>
+<p>題目：<em><a href="https://cses.fi/problemset/task/1158/">CSES - Book Shop</a></em></p>
+<blockquote>
+<p>You are in a book shop which sells $n$ different books. You know the price $(h_i)$ and number of pages $(s_i)$ of each book.</p>
+<p>You have decided that the total price of your purchases will be at most $x$. What is the maximum number of pages you can buy? You can buy each book at most once.</p>
+<p>$(1 \leq n \leq 10^3, 1\leq x \leq 10^5)$</p>
+</blockquote>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>【DP 三步驟】</h3>
+<ol>
+<li>定義：$dp(i, x)$ 為考慮 $1 \dots i$ 個書本並且選擇的書總共 $x$ 元的最大頁數</li>
+<li>初始值：$dp() = 0$</li>
+<li>轉移式：$dp(i, x) =
+\max
+\begin{cases}
+dp(i - 1, x) &amp; \
+dp(i - 1, x - h_i) + s_i, &amp; x - h_i \ge 0
+\end{cases}$</li>
+</ol>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)1005;
+const int maxx = (int)1e5 + 5;
+
+int n, x;
+int h[maxn], s[maxn];
+int dp[maxn][maxx];
+
+void solve() {
+    cin &gt;&gt; n &gt;&gt; x;
+
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; h[i];
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; s[i];
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 0; j &lt;= x; j++) {
+            dp[i][j] = dp[i - 1][j];
+            if (j - h[i] &gt;= 0) {
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - h[i]] + s[i]);
+            }
+        }
+    }
+
+    int an = 0;
+    for (int j = 0; j &lt;= x; j++) {
+        an = max(an, dp[n][j]);
+    }
+
+    cout &lt;&lt; an &lt;&lt; '\n';
+}
+</code></pre>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>發現到陣列太大了，所以我們可以用一個方法叫做：<strong>滾動 DP</strong></p>
+<ul>
+<li>注意到每次算 DP 值的時候只會用到 $i - 1$ 的地方</li>
+<li>把 DP 陣列想像成一個表格的話就是我們只會用到前一排的值</li>
+<li>可以使用兩個一維的 DP 陣列或者壓成一個一維的 DP 陣列</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>兩個一維的 DP：</p>
+<pre><code class="language-cpp">const int maxn = (int)1005;
+const int maxx = (int)1e5 + 5;
+
+int n, x;
+int h[maxn], s[maxn];
+int dp[2][maxx];
+
+void solve() {
+    cin &gt;&gt; n &gt;&gt; x;
+
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; h[i];
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; s[i];
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 0; j &lt;= x; j++) {
+            dp[i % 2][j] = dp[(i - 1) % 2][j];
+            if (j - h[i] &gt;= 0) {
+                dp[i % 2][j] = max(dp[i % 2][j], dp[(i - 1) % 2][j - h[i]] + s[i]);
+            }
+        }
+    }
+
+    int an = 0;
+    for (int j = 0; j &lt;= x; j++) {
+        an = max(an, dp[n % 2][j]);
+    }
+
+    cout &lt;&lt; an &lt;&lt; '\n';
+}
+</code></pre>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>一個一維的 DP：</p>
+<pre><code class="language-cpp">const int maxn = (int)1005;
+const int maxx = (int)1e5 + 5;
+
+int n, x;
+int h[maxn], s[maxn];
+int dp[maxx];
+
+void solve() {
+    cin &gt;&gt; n &gt;&gt; x;
+
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; h[i];
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; s[i];
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = x; j &gt;= 0; j---) {
+            if (j - h[i] &gt;= 0) {
+                dp[j] = max(dp[j], dp[j - h[i]] + s[i]);
+            }
+        }
+    }
+
+    int an = 0;
+    for (int j = 0; j &lt;= x; j++) {
+        an = max(an, dp[j]);
+    }
+
+    cout &lt;&lt; an &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(nx)$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>💡 <strong>提醒</strong></p>
+<ul>
+<li>注意題目的範圍來決定 DP 的定義</li>
+<li>注意滾動後的 $j$ 的迴圈順序</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>題目：</h2>
+<ul>
+<li><a href="https://cses.fi/problemset/task/1158/">CSES - Book Shop</a></li>
+<li><a href="https://atcoder.jp/contests/abc275/tasks/abc275_f">AtCoder ABC275 - pF. Erase Subarrays</a></li>
+<li><a href="https://atcoder.jp/contests/abc317/tasks/abc317_d">AtCoder ABC317 - pD. President</a></li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>區間 DP</h1>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>題目：<em><a href="https://atcoder.jp/contests/dp/tasks/dp_n?lang=en">AtCoder Educational DP Contest - pN. Slimes</a></em></p>
+<blockquote>
+<p>There are $N$ slimes lining up in a row. Initially, the $i$-th slime from the left has a size of $a_i$.</p>
+<p>Taro is trying to combine all the slimes into a larger slime. He will perform the following operation repeatedly until there is only one slime:</p>
+<ul>
+<li>Choose two adjacent slimes, and combine them into a new slime. The new slime has a size of $x+y$, where $x$ and $y$ are the sizes of the slimes before combining them. Here, a cost of $x+y$ is incurred. The positional relationship of the slimes does not change while combining slimes.</li>
+</ul>
+<p>Find the minimum possible total cost incurred.</p>
+<p>$(1 \le N \le 400, 1 \le a_i \le 10^9)$</p>
+</blockquote>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>【DP 三步驟】</h3>
+<ol>
+<li>定義：$dp(l, r)$ 為合併區間 $[l, r]$ 的史萊姆所需要的最短時間</li>
+<li>初始值：$dp(i, i) = 0$</li>
+<li>轉移式：$dp(l, r) = \min
+\begin{cases}
+dp(l, k) + dp(k + 1, r) + \sum_{i=l}^{r}a_i
+\end{cases}$</li>
+</ol>
+<p>列出轉移式後可以發現 $\sum_{i=l}^{r}a_i$ 可以輕鬆的利用前綴合搞定</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)405;
+
+int n;
+int ar[maxn], pf[maxn];
+int dp[maxn][maxn];
+
+void solve() {
+    cin &gt;&gt; n;
+
+    for (int i = 1; i &lt;= n; i++) {
+        cin &gt;&gt; ar[i];
+        pf[i] = pf[i - 1] + ar[i];
+    }
+
+    memset(dp, 0x3f3f3f3f, sizeof(dp));
+
+    for (int len = 1; len &lt;= n; len++) {
+        for (int l = 1, r = l + len - 1; l &lt;= n and r &lt;= n; l++, r++) {
+            if (len == 1) dp[l][r] = 0;
+            else {
+                for (int k = l; k &lt;= r; k++) {
+                    dp[l][r] = min(dp[l][r], dp[l][k] + dp[k + 1][r] + pf[r] - pf[l - 1]);
+                }
+            }
+        }
+    }
+
+    cout &lt;&lt; dp[1][n] &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(N^3)$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>題目：</h2>
+<ul>
+<li><a href="https://atcoder.jp/contests/dp/tasks/dp_n?lang=en">AtCoder DP Contest - pN. Slimes</a></li>
+<li><a href="https://atcoder.jp/contests/dp/tasks/dp_l">AtCoder DP Contest - pL. Deque</a></li>
+<li><a href="https://codeforces.com/contest/607/problem/B">Codeforces 607 - pB. Zuma</a></li>
+<li><a href="https://cses.fi/problemset/task/1097/">CSES - Removal Game</a></li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>LIS (Longest Increasing Subsequence)</h1>
+<h2>最長遞增子序列</h2>
+<h6>Credit：2023 資訊之芽算法班簡報</h6>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>子序列</h2>
+<p>從原本序列中挑幾個數字出來，不改變前後順序而產生的序列
+e.g.
+陣列是 ${1, 5, 2, 4, 6, 3}$，則 ${1, 2, 4}, {5, 2, 6, 3}$ 都是它的子序列
+這個陣列的 LIS 就是 ${1, 2, 4, 6}$，注意 LIS 可能不唯一，現在我們只求最長就好</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>題目：<a href="https://cses.fi/problemset/task/1145/">CSES - Increasing Subsequence</a></p>
+<blockquote>
+<p>You are given an array containing $n$ integers. Your task is to determine the longest increasing subsequence in the array, i.e., the longest subsequence where every element is larger than the previous one.
+A subsequence is a sequence that can be derived from the array by deleting some elements without changing the order of the remaining elements.
+$(1 \le n \le 2 \times 10^5)$</p>
+</blockquote>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>【DP 三步驟】</h3>
+<ol>
+<li>定義：$dp(i)$ 為從 $a_1 \dots a_i$ 中取數字，並且以 $a_i$ 為結尾的 LIS</li>
+<li>初始值：$dp(0) = 0$</li>
+<li>轉移式：$dp(i) = \max \begin{cases} dp(j) + 1, &amp; a_j &lt; a_i ~ \text{and} ~ j &lt; i \end{cases}$</li>
+</ol>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)2e5 + 5;
+
+int n;
+int ar[maxn];
+int dp[maxn];
+
+void solve() {
+    cin &gt;&gt; n;
+
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; ar[i];
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 0; j &lt; i; j++) {
+            if (ar[j] &lt; ar[i]) 
+                dp[i] = max(dp[i], dp[j] + 1);
+        }
+    }
+
+    int an = 0;
+    for (int i = 1; i &lt;= n; i++)
+        an = max(an, dp[i]);
+
+    cout &lt;&lt; an &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(n^2)$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>LIS 優化</h2>
+<p><strong>觀察</strong>：對於任一個位置的 $i$，如果有一個 $j$ 滿足 $a_j \le a_i$ 且 $dp(j) \ge dp(i)$，則 $dp(i)$ 就永遠不會被用到。
+簡單來說就是 $i$ 不管是 $a_i$ 還是 $dp(i)$ 都贏不了別人，那他就沒用了，再見。</p>
+<p><img src="images/1.png" alt=""></p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>因此我們開一個陣列 $tmp$ 記錄有可能有用的 ${a_i, dp(i)}$。
+又因為 LIS 長度每次只會加 1，因此可以再簡化成只記錄陣列的值即可。
+此時，$tmp(i) = \min(a_j), ~ \text{where} ~ dp(j) = i$</p>
+<p><img src="images/1.png" alt="">
+<img src="images/2.png" alt=""></p>
+<p>可以發現到 $tmp$ 裡面是嚴格遞增的！</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>所以我們的轉移式可以改成：
+$dp(i) = j + 1, ~ \text{where} ~ tmp(j) &lt; a_i ~ \text{and} ~ tmp(j + 1) \ge a_i$</p>
+<p>所以我們可以利用 <strong>二分搜</strong> 來得到我們的 $j$，所以轉移的時間就從 $O(n)$ 降到 $O(\log n)$ 了！</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">int n;
+vector&lt;int&gt; tmp;
+
+void solve() {
+    cin &gt;&gt; n;
+
+    for (int i = 1; i &lt;= n; i++) {
+        int x;  cin &gt;&gt; x;
+        auto it = lower_bound(tmp.begin(), tmp.end(), x);
+        if (it == tmp.end()) {
+            tmp.push_back(x);
+        } else {
+            *it = x;
+        }
+    }
+
+    cout &lt;&lt; (int)tmp.size() &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(n \log n)$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>題目：</p>
+<ul>
+<li>C<a href="https://cses.fi/problemset/task/1145/">SES - Increasing Subsequence</a></li>
+<li><a href="https://leetcode.com/problems/maximum-length-of-pair-chain/">LeetCode - 646. Maximum Length of Pair Chain</a></li>
+<li><a href="https://codeforces.com/contest/977/problem/F">Codeforces 977 - pF. Consecutive Subsequence</a></li>
+<li><a href="https://codeforces.com/gym/102951/problem/C">Codeforces gym 102951 - pC. LCS on Permutations</a></li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>LCS (Longest Common Subsequence)</h1>
+<h2>最長共同子序列</h2>
+<h6>Credit：2023 資訊之芽算法班簡報</h6>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>題目：<a href="https://atcoder.jp/contests/dp/tasks/dp_f?lang=en">AtCoder Educational DP Contest - pF. LCS</a></p>
+<blockquote>
+<p>You are given strings $s$ and $t$. Find one longest string that is a subsequence of both $s$ and $t$.
+$(1 \le |s|, |t| \le 3000)$</p>
+</blockquote>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>【DP 三步驟】</h3>
+<ol>
+<li>定義：$dp(i, j)$ 為 $s_{1 \dots i}$ 和 $t_{1 \dots j}$ 的 LCS 長度</li>
+<li>初始值：$dp(i, 0) = 0, ~ dp(0, j) = 0$</li>
+<li>轉移式：
+$dp(i, j) = \max \begin{cases}
+dp(i - 1, j - 1) + 1, &amp; \text{where} ~ s_i = t_j \
+dp(i - 1, j) \
+dp(i, j - 1) \
+\end{cases}$</li>
+</ol>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)3005;
+
+string s, t;
+int dp[maxn][maxn];
+
+void solve() {
+    cin &gt;&gt; s &gt;&gt; t;
+
+    int n = s.size(), m = t.size();
+    for (int i = 0; i &lt;= n; i++) {
+        for (int j = 0; j &lt;= m; j++) {
+            if (i == 0 or j == 0) dp[i][j] = 0;
+            else if (s[i - 1] == t[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+            else dp[i][j] = max({dp[i][j], dp[i - 1][j], dp[i][j - 1]});
+        }
+    }
+
+    cout &lt;&lt; dp[n][m] &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(nm)$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>其實也可以求 LCS 的字串ㄛ！
+有興趣的同學可以參考這篇文章：<a href="https://www.programiz.com/dsa/longest-common-subsequence">Longest Common Subsequence</a></p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>題目：</h2>
+<ul>
+<li><a href="https://atcoder.jp/contests/dp/tasks/dp_f?lang=en">AtCoder Educational DP Contest - pF. LCS</a></li>
+<li><a href="https://leetcode.com/problems/edit-distance/">LeetCode - 72. Edit Distance</a></li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>位元 DP</h1>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>Traveling Salesman Problem (TSP)</h2>
+<h2>旅行推銷員問題</h2>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>題目：<a href="https://cses.fi/problemset/task/1690/">CSES - Hamiltonian Flights</a></p>
+<blockquote>
+<p>There are $n$ cities and $m$ flight connections between them. You want to travel from Syrjälä to Lehmälä so that you visit each city exactly once. How many possible routes are there?
+Print one integer: the number of routes modulo $10^9+7$.
+$(2 \le n \le 20, 1 \le m \le n^2)$</p>
+</blockquote>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>可以發現到 $n$ 的範圍只有 $20$，這時候可以往 $O(2^n)$ 思考。
+那我們的 DP 狀態就設為 $2^n$ 次方應該沒毛病吧！</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>【DP 三步驟】</h3>
+<ol>
+<li>定義：$dp(i, mask)$ 為走過狀態為 $mask$ 的城市並且最後停留在城市 $i$ 的方法數</li>
+<li>初始值：$dp(0, 1) = 1$</li>
+<li>轉移式：
+$dp(i, mask) = \sum dp(j, mask - 2^j), ~ (i, j) \in E ~ \text{and} ~ (mask ~ &amp; ~ 2^j) &gt; 0$</li>
+</ol>
+<p>💡 <strong>想一想</strong>：這一題要用 Bottom-up 的迴圈還是 Top-down 的遞迴呢？算一下時間複雜度吧！</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <pre><code class="language-cpp">const int maxn = (int)22;
+const int MOD = (int)1e9 + 7;
+
+int n, m;
+vector&lt;int&gt; e[maxn];
+int dp[maxn][1 &lt;&lt; maxn];
+
+int f(int i, int mask) {
+    if (i == 0)
+        return dp[i][mask] = (mask == 1) ? 1 : 0;
+
+    if (!(mask &amp; (1 &lt;&lt; i)))
+        return 0;
+
+    if (dp[i][mask]) 
+        return dp[i][mask];
+    
+    int rtn = 0;
+    for (int j : e[i]) {
+        if (mask &amp; (1 &lt;&lt; j)) {
+            rtn += f(j, mask - (1 &lt;&lt; i));
+            if (rtn &gt;= MOD) rtn -= MOD;
+        }
+    }
+    return dp[i][mask] = rtn;
+}
+
+void solve() {
+    cin &gt;&gt; n &gt;&gt; m;
+
+    for (int i = 1; i &lt;= m; i++) {
+        int u, v;  cin &gt;&gt; u &gt;&gt; v;
+        e[v - 1].push_back(u - 1);
+    }
+
+    cout &lt;&lt; f(n - 1, (1 &lt;&lt; n) - 1) &lt;&lt; '\n';
+}
+</code></pre>
+<p>時間複雜度：$O(n^2 \times 2^n)$</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>題目：</h2>
+<ul>
+<li><a href="https://cses.fi/problemset/task/1690/">CSES - Hamiltonian Flights</a></li>
+<li><a href="https://atcoder.jp/contests/abc180/tasks/abc180_e?lang=en">AtCoder ABC180 - pE. Traveling Salesman among Aerial Cities</a></li>
+<li><a href="https://cses.fi/problemset/task/1653/">CSES - Elevator Rides</a></li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>其他的 DP 主題</h1>
+<h2>因為社團時間有限，所以請有興趣的同學自己上網找資料，有問題都可以問我ㄛ</h2>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <ul>
+<li>無限背包問題、有限背包問題</li>
+<li>DAG DP</li>
+<li>數位 DP</li>
+<li>輪廓線 DP</li>
+<li>各種 DP 優化
+<ul>
+<li>Bitset 優化</li>
+<li>矩陣快速冪優化</li>
+<li>資料結構優化</li>
+<li>單調對列優化</li>
+<li>斜率優化</li>
+</ul>
+</li>
+</ul>
+
+            </section>
+    
+
+
+    </div>
+
+
+  </div>
+
+  <div class="line top"></div>
+  <div class="line bottom"></div>
+  <div class="line left"></div>
+  <div class="line right"></div>
+
+  <script src="libs/reveal.js/4.3.1/reveal.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/notes/notes.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/markdown/markdown.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/highlight/highlight.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/math/math.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/fullscreen/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/animate/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/animate/svg.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/Chart.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3/d3.v3.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3.patch.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3/queue.v1.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3/topojson.v1.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/function-plot.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/customcontrols/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/embed-tweet/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/chart/chart.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/chart/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/verticator/verticator.js"></script>
+
+<script src="libs/reveal.js/4.3.1/plugin/zoom/zoom.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/search/search.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/menu/menu.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/chalkboard/plugin.js"></script>
+
+<!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/plugin.js"></script>  -->
+<!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/recorder.js"></script>-->
+<!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/RecordRTC.js"></script>-->
+
+  
+
+<script>
+  const printPlugins = [
+      RevealNotes,
+      RevealHighlight,
+      RevealMath.MathJax3,
+      RevealAnimate,
+      RevealChalkboard, 
+			RevealEmbedTweet,
+			RevealChart,
+		];
+
+		const plugins =  [...printPlugins,
+		RevealZoom, 
+		RevealSearch, 
+				RevealMarkdown, 
+				RevealMenu, 
+				RevealFullscreen,
+				RevealAnything,
+				//RevealAudioSlideshow,
+				//RevealAudioRecorder,
+				RevealCustomControls, 
+				// poll
+				// question
+				// seminar
+				Verticator 
+				 ]
+
+
+		// Also available as an ES module, see:
+		// https://revealjs.com/initialization/
+		Reveal.initialize({
+			controls: true,
+      controlsTutorial: true,
+      controlsLayout: 'bottom-right',
+      controlsBackArrows: 'faded',
+      progress: true,
+      slideNumber: false,
+      //#showSlideNumber "all" "print" "speaker"
+      hash: true, //# hash: false,
+      //# respondToHashChanges: true,
+      //# history: false,
+      keyboard: true,
+      //#keyboardCondition: null,
+      overview: true,
+      center: true,
+      touch: true,
+      loop: false,
+      rtl: false,
+      //#navigationMode: 'default', linear grid
+      shuffle: false,
+      fragments: true,
+      fragmentInURL: false,
+      embedded: false,
+      help: true,
+      //#pause: true
+      showNotes: false,
+      autoPlayMedia: false, // TODO fix this to a nullable value
+      //#preloadIframes: null. true false
+      //#autoAnimate: true
+      //#autoAnimateMatcher: null,
+      //#autoAnimateEasing: 'ease',
+      //autoAnimateDuration: 1.0,
+      //#autoAnimateUnmatched: true
+      //#autoAnimateStyles: []
+      autoSlide: 0, // TODO fix this to a falseable value
+      autoSlideStoppable: true,
+      autoSlideMethod: '0',
+      defaultTiming: 120,
+      mouseWheel: false,
+      //#previewLinks: false
+      //#postMessage: true, // TODO : this can cause issues with the vscode api ???
+      //#postMessageEvents: false,
+      //#focusBodyOnPageVisibilityChange: true,
+      transition: 'slide',
+      transitionSpeed: 'default',
+      backgroundTransition: 'fade',
+      //#pdfMaxPagesPerSlide: Number.POSITIVE_INFINITY,
+      //#pdfSeparateFragments: true,
+      //#pdfPageHeightOffset: -1,
+      viewDistance: 3,
+      //#mobileViewDistance: 2,
+      display: 'block',
+      //#hideInactiveCursor: true,
+      //#hideCursorTime: 5000
+
+      // Parallax Background
+      parallaxBackgroundImage: '',
+      parallaxBackgroundSize: '',
+      parallaxBackgroundHorizontal: 0,
+      parallaxBackgroundVertical: 0,
+
+      //Presentation Size
+      width: 960,
+			height: 700,
+			margin: 0.04,
+      minScale: 0.2,
+      maxScale: 2,
+      disableLayout: false,
+
+      audio: {
+        prefix: 'audio/', // audio files are stored in the "audio" folder
+        suffix: '.ogg', // audio files have the ".ogg" ending
+        textToSpeechURL: null, // the URL to the text to speech converter
+        defaultNotes: false, // use slide notes as default for the text to speech converter
+        defaultText: false, // use slide text as default for the text to speech converter
+        advance: 0, // advance to next slide after given time in milliseconds after audio has played, use negative value to not advance
+        autoplay: false, // automatically start slideshow
+        defaultDuration: 5, // default duration in seconds if no audio is available
+        defaultAudios: true, // try to play audios with names such as audio/1.2.ogg
+        playerOpacity: 0.05, // opacity value of audio player if unfocused
+        playerStyle: 'position: fixed; bottom: 4px; left: 25%; width: 50%; height:75px; z-index: 33;', // style used for container of audio controls
+        startAtFragment: false, // when moving to a slide, start at the current fragment or at the start of the slide
+      },
+      
+      chalkboard: { // font-awesome.min.css must be available
+        //src: "chalkboard/chalkboard.json",
+        storage: "chalkboard-demo",
+      },
+      
+			customcontrols: {
+					controls: [
+      						{
+						  id: 'toggle-overview',
+						  title: 'Toggle overview (O)',
+						  icon: '<i class="fa fa-th"></i>',
+						  action: 'Reveal.toggleOverview();'
+						}
+						,
+      {
+        icon: '<i class="fa fa-pen-square"></i>',
+        title: 'Toggle chalkboard (B)',
+        action: 'RevealChalkboard.toggleChalkboard();'
+      },
+      {
+        icon: '<i class="fa fa-pen"></i>',
+        title: 'Toggle notes canvas (C)',
+        action: 'RevealChalkboard.toggleNotesCanvas();'
+      }
+      
+				]
+			},
+			chart: {
+					defaults: { 
+						color: 'lightgray', // color of labels
+						scale: { 
+							beginAtZero: true, 
+							ticks: { stepSize: 1 },
+							grid: { color: "lightgray" } , // color of grid lines
+						},
+					},
+					line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ] }, 
+					bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]}, 
+					pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+					radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]}, 
+			},
+			math: {
+				mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+				config: 'TeX-AMS_HTML-full',
+				// pass other options into `MathJax.Hub.Config()`
+				TeX: { Macros: { RR: "{\\bf R}" } }
+				},
+				anything: [ 
+				{
+		className: "plot",
+		defaults: {width:500, height: 500, grid:true},
+		initialize: (function(container, options){ options.target = "#"+container.id; functionPlot(options) })
+	 },
+	 {
+		className: "chart",  
+		initialize: (function(container, options){ container.chart = new Chart(container.getContext("2d"), options);  })
+	 },
+	 {
+		className: "anything",
+		initialize: (function(container, options){ if (options && options.initialize) { options.initialize(container)} })
+	 },
+					],
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: (window.location.search.match(/print-pdf/gi) ? printPlugins : plugins ) 
+		});
+			
+
+
+	    // Change chalkboard theme : 
+		function changeTheme(input) {
+			var config = {};
+			config.theme = input.value;
+			Reveal.getPlugin("RevealChalkboard").configure(config);
+			input.blur();
+		}
+
+		// // Handle the message inside the webview
+        // window.addEventListener('message', event => {
+
+        //     const message = event.data; // The JSON data our extension sent
+
+        //     switch (message.command) {
+        //         case 'refactor':
+        //             Reveal.toggleHelp();
+        //     }
+        // });
+
+		if (window.location.search.match(/print-pdf-now/gi)) {
+      		setTimeout(() => {
+				window.print();
+			  }, 2500);
+			
+    }
+</script>
+
+</body>
+
+</html>

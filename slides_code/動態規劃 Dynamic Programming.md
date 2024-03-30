@@ -18,7 +18,7 @@ math: katex
 
 # 基礎 DP
 
-----
+---s
 
 ## 階乘問題
 
@@ -26,7 +26,7 @@ math: katex
 $(1 \leq N \leq 10^5, 1 \leq Q \leq 10^5)$
 > 
 
-----
+---
 
 ### 方法一：一個一個算
 
@@ -37,7 +37,7 @@ const int MOD = 1e9 + 7;
 
 int q;  cin >> q;
 
-while (q--) {
+while (q---) {
     int n;  cin >> n;
 
     long long an = 1;
@@ -52,7 +52,7 @@ while (q--) {
 
 時間複雜度：$O(QN) \Rightarrow \text{TLE}$
 
-----
+---
 
 ### 方法二：使用 DP
 
@@ -60,7 +60,7 @@ while (q--) {
 
 e.g. 算 $10!$ 和 $12!$ 都會用到 $8!$，如果我們有把 $8!$ 的答案存下來就可以必面重複算的時間
 
-----
+---
 
 ### 【DP 三步驟】
 
@@ -68,7 +68,7 @@ e.g. 算 $10!$ 和 $12!$ 都會用到 $8!$，如果我們有把 $8!$ 的答案�
 2. 初始值：$dp(1) = 1$
 3. 轉移式：$dp(x) = dp(x-1) \times x$
 
-----
+---
 
 ```cpp
 const int MOD = 1e9 + 7;
@@ -84,7 +84,7 @@ for (int i = 2; i <= 10000; i++) {
 
 int q;  cin >> q;
 
-while (q--) {
+while (q---) {
     int n;  cin >> n;
 
     cout << dp[n] << '\n';
@@ -95,14 +95,14 @@ while (q--) {
 
 💡 利用了 DP 的轉移來成功用空間換取時間
 
-----
+---
 
 ## 走樓梯問題
 
 > 有一個人要走樓梯，總共有 $N$ 層階梯，每走一步可以往上走 1 或 2 格階梯，請問走上樓梯有幾種方法？請輸出答案除以 $10^9 + 7$ 的餘數。
 $(1 \leq N \leq 10^5)$
 
-----
+---
 
 我們一樣用 DP 三步驟來解決這一題：
 
@@ -112,7 +112,7 @@ $(1 \leq N \leq 10^5)$
 
 而計算 DP 值又有分為兩種方法：Top-down & Bottom-up
 
-----
+---
 
 ### Top-down
 
@@ -125,7 +125,7 @@ $(1 \leq N \leq 10^5)$
     - 程式碼採用遞迴結構，不斷呼叫函式，執行效率較差
     - 無法自由地控制計算順序，因而無法妥善運用記憶體，浪費了可回收再利用的記憶體
 
-----
+---
 
 ```cpp
 const int maxn = (int)2e5 + 5;
@@ -143,7 +143,7 @@ int f(int x) {
 void solve() {
     int q;  cin >> q;
 
-    while (q--) {
+    while (q---) {
         int n;  cin >> n;
 
         cout << f(n) << '\n';
@@ -151,7 +151,7 @@ void solve() {
 }
 ```
 
-----
+---
 
 ### Bottom-up
 
@@ -160,7 +160,7 @@ void solve() {
 - 好處：與 Top-down 相反
 - 壞處：與 Top-down 相反
 
-----
+---
 
 ```cpp
 const int maxn = (int)2e5 + 5;
@@ -177,7 +177,7 @@ void solve() {
 
     int q;  cin >> q;
 
-    while (q--) {
+    while (q---) {
         int n;  cin >> n;
 
         cout << dp[n] << '\n';
@@ -185,7 +185,7 @@ void solve() {
 }
 ```
 
-----
+---
 
 ## 題目：
 * [薇閣資研社進階測試題 ─ pC. 走階梯](https://codeforces.com/group/m1FMwlvtGj/contest/466863/problem/C)
@@ -194,7 +194,7 @@ void solve() {
 
 # 背包問題
 
-----
+---
 
 ## 0/1 背包問題
 
@@ -207,7 +207,7 @@ void solve() {
 > 
 > $(1 \leq n \leq 10^3, 1\leq x \leq 10^5)$
 
-----
+---
 
 ### 【DP 三步驟】
 
@@ -220,7 +220,7 @@ dp(i - 1, x) & \\
 dp(i - 1, x - h_i) + s_i, & x - h_i \ge 0
 \end{cases}$
 
-----
+---
 
 ```cpp
 const int maxn = (int)1005;
@@ -254,7 +254,7 @@ void solve() {
 }
 ```
 
-----
+---
 
 發現到陣列太大了，所以我們可以用一個方法叫做：**滾動 DP**
 
@@ -262,7 +262,7 @@ void solve() {
 - 把 DP 陣列想像成一個表格的話就是我們只會用到前一排的值
 - 可以使用兩個一維的 DP 陣列或者壓成一個一維的 DP 陣列
 
-----
+---
 
 兩個一維的 DP：
 
@@ -298,7 +298,7 @@ void solve() {
 }
 ```
 
-----
+---
 
 一個一維的 DP：
 
@@ -317,7 +317,7 @@ void solve() {
     for (int i = 1; i <= n; i++) cin >> s[i];
 
     for (int i = 1; i <= n; i++) {
-        for (int j = x; j >= 0; j--) {
+        for (int j = x; j >= 0; j---) {
             if (j - h[i] >= 0) {
                 dp[j] = max(dp[j], dp[j - h[i]] + s[i]);
             }
@@ -335,14 +335,14 @@ void solve() {
 
 時間複雜度：$O(nx)$
 
-----
+---
 
 
 💡 **提醒**
 * 注意題目的範圍來決定 DP 的定義
 * 注意滾動後的 $j$ 的迴圈順序
 
-----
+---
 
 ## 題目：
 * [CSES - Book Shop](https://cses.fi/problemset/task/1158/)
@@ -353,7 +353,7 @@ void solve() {
 
 # 區間 DP
 
-----
+---
 
 題目：*[AtCoder Educational DP Contest - pN. Slimes](https://atcoder.jp/contests/dp/tasks/dp_n?lang=en)*
 
@@ -369,7 +369,7 @@ void solve() {
 > $(1 \le N \le 400, 1 \le a_i \le 10^9)$
 > 
 
-----
+---
 
 ### 【DP 三步驟】
 
@@ -382,7 +382,7 @@ dp(l, k) + dp(k + 1, r) + \sum_{i=l}^{r}a_i
 
 列出轉移式後可以發現 $\sum_{i=l}^{r}a_i$ 可以輕鬆的利用前綴合搞定
 
-----
+---
 
 ```cpp
 const int maxn = (int)405;
@@ -418,7 +418,7 @@ void solve() {
 
 時間複雜度：$O(N^3)$
 
-----
+---
 
 ## 題目：
 * [AtCoder DP Contest - pN. Slimes](https://atcoder.jp/contests/dp/tasks/dp_n?lang=en)
@@ -432,7 +432,7 @@ void solve() {
 ## 最長遞增子序列
 ###### Credit：2023 資訊之芽算法班簡報
 
-----
+---
 
 ## 子序列
 從原本序列中挑幾個數字出來，不改變前後順序而產生的序列
@@ -440,14 +440,14 @@ e.g.
 陣列是 $\{1, 5, 2, 4, 6, 3\}$，則 $\{1, 2, 4\}, \{5, 2, 6, 3\}$ 都是它的子序列
 這個陣列的 LIS 就是 $\{1, 2, 4, 6\}$，注意 LIS 可能不唯一，現在我們只求最長就好
 
-----
+---
 
 題目：[CSES - Increasing Subsequence](https://cses.fi/problemset/task/1145/)
 > You are given an array containing $n$ integers. Your task is to determine the longest increasing subsequence in the array, i.e., the longest subsequence where every element is larger than the previous one.
 > A subsequence is a sequence that can be derived from the array by deleting some elements without changing the order of the remaining elements.
 > $(1 \le n \le 2 \times 10^5)$
 
-----
+---
 
 ### 【DP 三步驟】
 
@@ -455,7 +455,7 @@ e.g.
 2. 初始值：$dp(0) = 0$
 3. 轉移式：$dp(i) = \max \begin{cases} dp(j) + 1, & a_j < a_i ~ \text{and} ~ j < i \end{cases}$
 
-----
+---
 
 ```cpp
 const int maxn = (int)2e5 + 5;
@@ -485,7 +485,7 @@ void solve() {
 ```
 時間複雜度：$O(n^2)$
 
-----
+---
 
 ## LIS 優化
 **觀察**：對於任一個位置的 $i$，如果有一個 $j$ 滿足 $a_j \le a_i$ 且 $dp(j) \ge dp(i)$，則 $dp(i)$ 就永遠不會被用到。
@@ -493,7 +493,7 @@ void solve() {
 
 ![](images/1.png)
 
-----
+---
 
 因此我們開一個陣列 $tmp$ 記錄有可能有用的 $\{a_i, dp(i)\}$。
 又因為 LIS 長度每次只會加 1，因此可以再簡化成只記錄陣列的值即可。
@@ -504,14 +504,14 @@ void solve() {
 
 可以發現到 $tmp$ 裡面是嚴格遞增的！
 
-----
+---
 
 所以我們的轉移式可以改成：
 $dp(i) = j + 1, ~ \text{where} ~ tmp(j) < a_i ~ \text{and} ~ tmp(j + 1) \ge a_i$
 
 所以我們可以利用 **二分搜** 來得到我們的 $j$，所以轉移的時間就從 $O(n)$ 降到 $O(\log n)$ 了！
 
-----
+---
 
 ```cpp
 int n;
@@ -535,7 +535,7 @@ void solve() {
 ```
 時間複雜度：$O(n \log n)$
 
-----
+---
 
 題目：
 * C[SES - Increasing Subsequence](https://cses.fi/problemset/task/1145/)
@@ -549,13 +549,13 @@ void solve() {
 ## 最長共同子序列
 ###### Credit：2023 資訊之芽算法班簡報
 
-----
+---
 
 題目：[AtCoder Educational DP Contest - pF. LCS](https://atcoder.jp/contests/dp/tasks/dp_f?lang=en)
 > You are given strings $s$ and $t$. Find one longest string that is a subsequence of both $s$ and $t$.
 > $(1 \le |s|, |t| \le 3000)$
 
-----
+---
 
 ### 【DP 三步驟】
 
@@ -568,7 +568,7 @@ dp(i - 1, j) \\
 dp(i, j - 1) \\
 \end{cases}$
 
-----
+---
 
 ```cpp
 const int maxn = (int)3005;
@@ -593,12 +593,12 @@ void solve() {
 ```
 時間複雜度：$O(nm)$
 
-----
+---
 
 其實也可以求 LCS 的字串ㄛ！
 有興趣的同學可以參考這篇文章：[Longest Common Subsequence](https://www.programiz.com/dsa/longest-common-subsequence)
 
-----
+---
 
 ## 題目：
 * [AtCoder Educational DP Contest - pF. LCS](https://atcoder.jp/contests/dp/tasks/dp_f?lang=en)
@@ -608,24 +608,24 @@ void solve() {
 
 # 位元 DP
 
-----
+---
 
 ## Traveling Salesman Problem (TSP)
 ## 旅行推銷員問題
 
-----
+---
 
 題目：[CSES - Hamiltonian Flights](https://cses.fi/problemset/task/1690/)
 > There are $n$ cities and $m$ flight connections between them. You want to travel from Syrjälä to Lehmälä so that you visit each city exactly once. How many possible routes are there?
 > Print one integer: the number of routes modulo $10^9+7$.
 > $(2 \le n \le 20, 1 \le m \le n^2)$
 
-----
+---
 
 可以發現到 $n$ 的範圍只有 $20$，這時候可以往 $O(2^n)$ 思考。
 那我們的 DP 狀態就設為 $2^n$ 次方應該沒毛病吧！
 
-----
+---
 
 ### 【DP 三步驟】
 
@@ -636,7 +636,7 @@ void solve() {
 
 💡 **想一想**：這一題要用 Bottom-up 的迴圈還是 Top-down 的遞迴呢？算一下時間複雜度吧！
 
-----
+---
 
 ```cpp
 const int maxn = (int)22;
@@ -679,7 +679,7 @@ void solve() {
 ```
 時間複雜度：$O(n^2 \times 2^n)$
 
-----
+---
 
 ## 題目：
 * [CSES - Hamiltonian Flights](https://cses.fi/problemset/task/1690/)
@@ -691,7 +691,7 @@ void solve() {
 # 其他的 DP 主題
 ## 因為社團時間有限，所以請有興趣的同學自己上網找資料，有問題都可以問我ㄛ
 
-----
+---
 
 * 無限背包問題、有限背包問題
 * DAG DP
