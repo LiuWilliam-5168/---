@@ -89,7 +89,7 @@ void Sieve_of_Eratosthenes(int m) {
 
 ---
 
-我們儲存一個陣列叫做 lpf (lowest prime factor)，記錄每個數字的最小質因數
+我們儲存一個陣列叫做 lpf (least prime factor)，記錄每個數字的最小質因數
 ```cpp
 lpf[6] = 2
 lpf[21] = 3
@@ -154,7 +154,7 @@ int Euclidean_Algorithm(int a, int b) {
 
 ---
 
-## 貝組定理
+## 貝祖定理
 對於任何整數 $a, b, c$，若 $ax + by = c$ 存在整數解，則 $\gcd(a, b) \mid c$
 
 ---
