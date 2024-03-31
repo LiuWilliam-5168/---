@@ -14,14 +14,11 @@ _class: invert
 
 # Table of Contents
 * 質因數分解
-* 貝祖定理
-* 擴展歐幾里德演算法
-* 模運算
-* 反元素
-* 費馬小定理
+* 最大公因數 GCD & 最小公倍數 LCM
+* 擴展歐幾里得演算法 Extended Euclidean Algorithm
+* 模運算 Modular Arithmetics
 * 快速冪
-* 離散對數？
-* 矩陣快速冪？
+* 結論
 
 ---
 
@@ -254,3 +251,151 @@ pair<int, int> Extended_GCD(int a, int b) {
 ```
 程式碼：擴展歐幾里得演算法
 時間複雜度：$O(\log \min(a, b))$
+
+---
+
+# 模運算 Modular Arithmetics
+
+---
+
+## 同餘
+一般我們稱兩個數字 $a, b$ 同餘代表 $a$ 除以 $p$ 的餘數和 $b$ 除以 $p$ 的餘數相同
+$$
+a \equiv b \pmod p
+$$
+
+---
+
+## 模運算性質
+平常很常用到 mod 對吧，實際上 mod 跟一般的運算很像，可以加減和相乘
+$$
+\begin{aligned}
+    a & + b \pmod p & \equiv a \pmod p & + b \pmod p \\
+    a & - b \pmod p & \equiv a \pmod p & - b \pmod p \\
+    a & \times b \pmod p & \equiv a \pmod p & \times b \pmod p \\
+    a & ~/~~ b \pmod p & \not\equiv a \pmod p & ~/~~ b \pmod p
+\end{aligned}
+$$
+注意沒有辦法用除的喔！
+
+---
+
+## 模逆元
+在數學裡面我們學過，要計算 $a / b$，我們可以寫成 $a \times b^{-1}$，那這樣是不是就解決我們不能用除法的問題了！
+這裡我們稱 $b^{-1}$ 是 $b$ 的模逆元或模反元素
+
+---
+
+不過對於一個數 $a$ 和取餘的數 $p$ 來說，$a$ 對 $p$ 有模逆元若且唯若 $\gcd(a, p) = 1$
+接下來我們都處理 $p$ 是質數的情形來求模逆元，如果 $\gcd(a, p) \not= 1$ 的話就必須用 Extended Euclidean Algorithm
+
+---
+
+## 費馬小定理 Fermat's Little Theorum
+
+---
+
+> 對於任何整數 $a$，質數 $p$ 都滿足 $a^p - a \equiv 0 \pmod p$，若 $a$ 不是 $p$ 的倍數，則可以推得 $a^{p - 1} \equiv 1 \pmod p$
+
+---
+
+因為
+$$
+a^{p - 1} \equiv 1 \pmod p
+$$
+所以
+$$
+a^{p - 2} \times a \equiv 1 \pmod p
+$$
+和這個比較一下
+$$
+a^{-1} \times a \equiv 1 \pmod p
+$$
+結論
+$$
+a^{p - 2} \equiv a^{-1} \pmod p
+$$
+
+<br />
+
+這樣我們就成功求出 $a$ 的模反元素了！可以開始除囉！
+
+---
+
+# 快速冪
+
+---
+
+## 直接算
+要我算 $a^{100}$ 這很簡單，直接跑個 for loop 就好了
+但是如果要求的是 $a^{10^9}$ 呢，這樣就頭大了 :(
+
+---
+
+## 分解算
+首先我們可以想到：$a^p = a^{p / 2} \times a^{p / 2}$
+所以我們是不是一直用 $/~2$ 的方法分解，直到 $a^0 = 1$
+
+---
+
+$$
+a^b =
+\begin{cases}
+    1 &, \text{if $b = 0$} \\
+    (a^{b / 2})^2 &, \text{if $b$ is even} \\
+    (a^{b / 2})^2 \times a &, \text{if $b$ is odd}
+\end{cases}
+$$
+由此可知，我們把 $b$ 分解成 $\log b$ 層，所以時間複雜度是 $O(\log b)$
+
+---
+
+```cpp
+int Fast_Power(int a, int b, int m) {
+    if (b == 0) 
+        return 1;
+
+    int mid = fstpow(a, b / 2, m);
+
+    if (b & 1) return mid * mid % m * a % m;
+    else return mid * mid % m;
+}
+```
+程式碼：快速冪 （遞迴）
+
+---
+
+```cpp
+int Fast_Power(int a, int b, int m) {
+    int ans = 1;
+    while (b) {
+        if (b & 1) 
+            ans = ans * a % m;
+        
+        a = a * a % m;
+        b >>= 1;
+    }
+    return ans;
+}
+```
+程式碼：快速冪（迴圈）
+
+---
+
+利用快速冪就可以快速的算出剛剛算不出來的 $a^{p - 2}$ 囉！
+
+---
+
+# 結論
+
+---
+
+辛苦啦！一些基本的數論就到這裡！
+其實數論還有很多很多的主題，有興趣就去查查看吧
+* Mex
+* 歐拉函數 Euler's Totient Function
+* 中國剩餘定理 Chinese Reminder Theorem
+* 賽局理論 Game Theory
+* 矩陣 Matrix & 矩陣快速冪
+* 離賽對數 Discrete Log
+* Pollard Rho Algorithm（酷酷的質因數分解）
