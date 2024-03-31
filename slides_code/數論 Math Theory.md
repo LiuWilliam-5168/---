@@ -397,5 +397,5 @@ int Fast_Power(int a, int b, int m) {
 * 中國剩餘定理 Chinese Reminder Theorem
 * 賽局理論 Game Theory
 * 矩陣 Matrix & 矩陣快速冪
-* 離賽對數 Discrete Log
+* 離散對數 Discrete Log
 * Pollard Rho Algorithm（酷酷的質因數分解）
