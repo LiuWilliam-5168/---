@@ -112,6 +112,7 @@ void Linear_Sieve(int m) {
         for (int p : primes) {
             if (i * p >= m) break;
             lpf[i * p] = p;
+            if (i % p == 0) break;
         }
     }
 }
